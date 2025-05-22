@@ -12,7 +12,7 @@ Simulation and Validation of Optical Fourier Convolution Neural Networks (OFCNN)
 - numpy==2.2.5
 - torch==2.5.1
 - torcheval==0.0.7
-- git+https://github.com/AnirudhPuligandla/pytorch-onn.git
+- git+https://github.com/SPOTLIGHT-24-26/pytorch-onn.git
 - torchonn_pyutils==0.0.3.2
 - torchvision==0.20.1
 
