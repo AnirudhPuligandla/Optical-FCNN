@@ -14,38 +14,39 @@ import json
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 batch_size = 64
-EPOCHS = 50
+EPOCHS = 100
 lr = 1e-5
 moment = 0.99
 
 best_vloss = 1_000_000.
 best_vacc = 0.0
 bestEpochNum = 0
-timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-model_path = 'models/dummy'
+timestamp = datetime.now().strftime('%m%d_%H%M')
+#model_path = 'models/'
 tLoss = []
 vLoss = []
 tAcc = []
 vAcc = []
 timeAccumulator = [0.]
 
-#mode = 'fourier'
+mode = 'fourier'
 #mode = 'spatial'
-mode = 'digital'
+#mode = 'digital'
 
 # dataName = 'cifar'
 # imSize = 32
 # imChannels = 3
 dataName = 'mnist'
-imSize = 28
+imSize = 8
 imChannels = 1
 # dataName = 'fMnist'
 # imSize = 28
 # imChannels = 1
 
-numComponents = 28
+numComponents = 8
 
-mnistData =  data_loader.MnistData(mode, True, batch_size, numComponents=numComponents)
+# Note: for Fourier CNNs, always set normalize=False
+mnistData =  data_loader.MnistData(mode, False, batch_size, numComponents=numComponents)
 trainLoader, testLoader = mnistData.getDataLoaders()
 # cifarData =  data_loader.CifarData(mode, True, batch_size)
 # trainLoader, testLoader = cifarData.getDataLoaders()
@@ -67,8 +68,8 @@ trainLoader, testLoader = mnistData.getDataLoaders()
 # #stdDatasetI /= len(trainLoader)
 
 #model = models.simpleCNN(device, imChannels, imSize)
-#model = models.simpleFCNN(device, imChannels, imSize)
-model = models.simpleDCNN(device, imChannels, imSize)
+model = models.simpleFCNN(device, imChannels, imSize)
+#model = models.simpleDCNN(device, imChannels, imSize)
 
 #model = models.dummyTest(device, imChannels, imSize)
 
@@ -79,7 +80,7 @@ optimizer = optim.Adam(model.parameters(), lr=lr)
 #optimizer = optim.SGD(model.parameters(), lr=lr, momentum=moment)
 
 # load checkpoint
-# checkpoint = torch.load('models/abs_squared_final/fMnist_fourier_model_20250319_192911_1e-05_28_107_chkPnt.tar', weights_only=True)
+# checkpoint = torch.load('models/mnist_fourier_0521_1121_1e-05_8_192_chkPnt.tar', weights_only=True)
 # model.load_state_dict(checkpoint['model_state_dict'])
 # optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 # epoch = checkpoint['epoch']
@@ -163,7 +164,7 @@ for epoch in range(EPOCHS):
         best_vloss = avg_vloss
         best_vacc = avg_vacc
         bestEpochNum = epoch + 1
-        model_path = 'models/'+ dataName + '_' + mode + '_model_{}_{}_{}_{}'.format(timestamp, lr, numComponents, epoch + 1)
+        model_path = 'models/'+ dataName + '_' + mode + '_{}_{}_{}_{}'.format(timestamp, lr, numComponents, epoch + 1)
         bestModel = model.state_dict()
     # stop training if loss is diverging
     # if epoch - bestEpochNum > 15:
